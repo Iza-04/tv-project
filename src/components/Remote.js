@@ -1,7 +1,3 @@
-import clickSound from "../sounds/click.mp3";
-import powerOnSound from "../sounds/power-on.mp3";
-import powerOffSound from "../sounds/power-off.mp3";
-
 function Remote({
   isOn,
   setIsOn,
@@ -13,14 +9,24 @@ function Remote({
   showMenu,
   setShowMenu,
 }) {
-  const click = () => new Audio(clickSound).play();
+  const playSound = (src) => {
+    const audio = new Audio(src);
+    audio.volume = 0.5;
+
+    audio.play().catch(() => {});
+  };
+
+  const click = () => {
+    playSound("/sounds/click.mp3");
+  };
 
   const powerToggle = () => {
     if (isOn) {
-      new Audio(powerOffSound).play();
+      playSound("/sounds/power-off.mp3");
     } else {
-      new Audio(powerOnSound).play();
+      playSound("/sounds/power-on.mp3");
     }
+
     setIsOn(!isOn);
   };
 
@@ -31,6 +37,8 @@ function Remote({
       <button className="power" onClick={powerToggle}>
         ⏻
       </button>
+
+      <hr />
 
       <button
         onClick={() => {
@@ -52,6 +60,8 @@ function Remote({
         Канал -
       </button>
 
+      <hr />
+
       <button
         onClick={() => {
           click();
@@ -71,6 +81,8 @@ function Remote({
       >
         🔉 -
       </button>
+
+      <hr />
 
       <button
         onClick={() => {
