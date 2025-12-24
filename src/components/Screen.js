@@ -1,19 +1,32 @@
-function Screen({ isOn, channel, volume, showMenu }) {
+import "./Screen.css";
+
+function Screen({ isOn, channel, volume, isMuted, showMenu, isLoading }) {
+  if (!isOn) {
+    return (
+      <div className="tv-screen off">
+        <span className="off-text">TV OFF</span>
+      </div>
+    );
+  }
+
   return (
-    <div className={`screen ${isOn ? "on" : "off"}`}>
-      {!isOn && <p>Телевизор выключен</p>}
+    <div className="tv-screen on">
+      {isLoading && <div className="loading">Loading channel...</div>}
 
-      {isOn && (
-        <>
-          <h2>{channel}</h2>
+      <video
+        src={channel.video}
+        autoPlay
+        muted={isMuted}
+        volume={volume / 100}
+        width="100%"
+      />
 
-          {showMenu && (
-            <div className="menu">
-              <p>📋 Меню</p>
-              <p>🔊 Громкость: {volume}</p>
-            </div>
-          )}
-        </>
+      {showMenu && (
+        <div className="menu">
+          <div>📺 Channel: {channel.number}</div>
+          <div>🔊 Volume: {isMuted ? 0 : volume}</div>
+          {isMuted && <div className="mute">MUTE</div>}
+        </div>
       )}
     </div>
   );
