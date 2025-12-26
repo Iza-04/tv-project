@@ -5,18 +5,23 @@ import Remote from "./Remote";
 const channels = [
   {
     number: 1,
-    name: "News TV",
-    video: "/videos/channel1.mp4",
+    name: "Природа",
+    image: "/images/nature.jpg",
   },
   {
     number: 2,
-    name: "Music TV",
-    video: "/videos/channel2.mp4",
+    name: "Мультфильмы",
+    image: "/images/cartoons.jpg",
   },
   {
     number: 3,
-    name: "Nature TV",
-    video: "/videos/channel3.mp4",
+    name: "История",
+    image: "/images/history.jpg",
+  },
+  {
+    number: 4,
+    name: "Фантастика",
+    image: "/images/fantasy.jpg",
   },
 ];
 

@@ -13,18 +13,13 @@ function Screen({ isOn, channel, volume, isMuted, showMenu, isLoading }) {
     <div className="tv-screen on">
       {isLoading && <div className="loading">Loading channel...</div>}
 
-      <video
-        src={channel.video}
-        autoPlay
-        muted={isMuted}
-        volume={volume / 100}
-        width="100%"
-      />
+      <img src={channel.image} alt={channel.name} className="channel-image" />
 
       {showMenu && (
         <div className="menu">
-          <div>📺 Channel: {channel.number}</div>
-          <div>🔊 Volume: {isMuted ? 0 : volume}</div>
+          <div>📺 Канал: {channel.number}</div>
+          <div>📌 {channel.name}</div>
+          <div>🔊 Громкость: {isMuted ? 0 : volume}</div>
           {isMuted && <div className="mute">MUTE</div>}
         </div>
       )}
