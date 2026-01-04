@@ -33,6 +33,54 @@ function TV() {
   const [showMenu, setShowMenu] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.repeat) return;
+
+      switch (e.key) {
+        case "p":
+        case "P":
+          setIsOn((prev) => !prev);
+          break;
+
+        case "ArrowUp":
+          setChannel((prev) => (prev + 1) % channels.length);
+          break;
+
+        case "ArrowDown":
+          setChannel((prev) => (prev === 0 ? channels.length - 1 : prev - 1));
+          break;
+
+        case "ArrowRight":
+          setVolume((prev) => Math.min(prev + 5, 100));
+          setIsMuted(false);
+          break;
+
+        case "ArrowLeft":
+          setVolume((prev) => Math.max(prev - 5, 0));
+          break;
+
+        case "m":
+        case "M":
+          setIsMuted((prev) => !prev);
+          break;
+
+        case "Enter":
+          setShowMenu((prev) => !prev);
+          break;
+
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   const changeChannel = (direction) => {
     setIsLoading(true);
 
