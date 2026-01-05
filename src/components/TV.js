@@ -1,38 +1,60 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Screen from "./Screen";
 import Remote from "./Remote";
 
+/**
+ * 📺 Список каналов
+ * Объявлен ВЫШЕ компонента, чтобы был доступен в useEffect
+ */
 const channels = [
   {
     number: 1,
     name: "Природа",
-    image: "/images/nature.jpg",
+    video: "/videos/nature.mp4",
   },
   {
     number: 2,
     name: "Мультфильмы",
-    image: "/images/cartoons.jpg",
+    video: "/videos/cartoons.mp4",
   },
   {
     number: 3,
     name: "История",
-    image: "/images/history.jpg",
+    video: "/videos/history.mp4",
   },
   {
     number: 4,
     name: "Фантастика",
-    image: "/images/fantasy.jpg",
+    video: "/videos/fantasy.mp4",
   },
 ];
 
 function TV() {
+  /* 🔹 Основные состояния */
   const [isOn, setIsOn] = useState(false);
   const [channel, setChannel] = useState(0);
   const [volume, setVolume] = useState(50);
   const [isMuted, setIsMuted] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
+  /* 🔹 Состояние для анимации */
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  /**
+   * 🔁 Плавная смена канала
+   */
+  const changeChannelSmooth = (newChannel) => {
+    setIsTransitioning(true);
+
+    setTimeout(() => {
+      setChannel(newChannel);
+      setIsTransitioning(false);
+    }, 300);
+  };
+
+  /**
+   * ⌨️ Управление с клавиатуры
+   */
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.repeat) return;
@@ -43,13 +65,17 @@ function TV() {
           setIsOn((prev) => !prev);
           break;
 
-        case "ArrowUp":
-          setChannel((prev) => (prev + 1) % channels.length);
+        case "ArrowUp": {
+          const next = (channel + 1) % channels.length;
+          changeChannelSmooth(next);
           break;
+        }
 
-        case "ArrowDown":
-          setChannel((prev) => (prev === 0 ? channels.length - 1 : prev - 1));
+        case "ArrowDown": {
+          const prev = channel === 0 ? channels.length - 1 : channel - 1;
+          changeChannelSmooth(prev);
           break;
+        }
 
         case "ArrowRight":
           setVolume((prev) => Math.min(prev + 5, 100));
@@ -79,38 +105,33 @@ function TV() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
-
-  const changeChannel = (direction) => {
-    setIsLoading(true);
-
-    setTimeout(() => {
-      setChannel((prev) => {
-        if (direction === "up") {
-          return (prev + 1) % channels.length;
-        }
-        return (prev - 1 + channels.length) % channels.length;
-      });
-      setIsLoading(false);
-    }, 800);
-  };
+  }, [channel]);
 
   return (
-    <div style={{ display: "flex", gap: "40px", padding: "20px" }}>
+    <div
+      style={{
+        display: "flex",
+        gap: "40px",
+        padding: "20px",
+        alignItems: "flex-start",
+      }}
+    >
+      {/* 📺 Экран телевизора */}
       <Screen
         isOn={isOn}
         channel={channels[channel]}
         volume={volume}
         isMuted={isMuted}
         showMenu={showMenu}
-        isLoading={isLoading}
+        isTransitioning={isTransitioning}
       />
 
+      {/* 🎮 Пульт управления */}
       <Remote
         isOn={isOn}
         setIsOn={setIsOn}
         channel={channel}
-        changeChannel={changeChannel}
+        changeChannel={changeChannelSmooth}
         channelsCount={channels.length}
         volume={volume}
         setVolume={setVolume}
